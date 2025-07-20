@@ -329,14 +329,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case DUAL_FUNC_2:
       if (record->tap.count > 0) {
         if (record->event.pressed) {
-        register_code(KC_LCTRL);
+        register_code(KC_LCTL);
         register_code(KC_LSHIFT);
         if (IS_LAYER_ON(0)) {
           tap_code(KC_3);
         } else {
           tap_code(KC_1);
         }
-        unregister_code(KC_LCTRL);
+        unregister_code(KC_LCTL);
         unregister_code(KC_LSHIFT);
         layer_move(3);
       } else {
