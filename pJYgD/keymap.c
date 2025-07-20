@@ -330,14 +330,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->tap.count > 0) {
         if (record->event.pressed) {
         register_code(KC_LCTL);
-        register_code(KC_LSHIFT);
+        register_code(KC_LSFT);
         if (IS_LAYER_ON(0)) {
           tap_code(KC_3);
         } else {
           tap_code(KC_1);
         }
         unregister_code(KC_LCTL);
-        unregister_code(KC_LSHIFT);
+        unregister_code(KC_LSFT);
         layer_move(3);
       } else {
         layer_move(1);
