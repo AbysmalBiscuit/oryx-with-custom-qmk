@@ -334,8 +334,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         } else {
           tap_code(KC_1);
         }
-        unregister_code(KC_LCTL);
         unregister_code(KC_LSFT);
+        unregister_code(KC_LCTL);
         layer_move(3);
       } else {
         layer_move(1);
