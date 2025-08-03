@@ -14,7 +14,9 @@ git pull --unshallow
 
 echo "################################################################################"
 echo "Download layout source"
+
 _data='{"query":"query getLayout($hashId: String!, $revisionId: String!, $geometry: String) {layout(hashId: $hashId, geometry: $geometry, revisionId: $revisionId) {  revision { hashId, qmkVersion, title}}","variables":{"hashId":"'"${layout_id}'"',"geometry":"'"${layout_geometry}"'","revisionId":"latest"}}'
+
 response=$(curl --location 'https://oryx.zsa.io/graphql' --header 'Content-Type: application/json' --data "$_data" | jq '.data.layout.revision | [.hashId, .qmkVersion, .title]')
 hash_id=$(echo "${response}" | jq -r '.[0]')
 firmware_version=$(printf "%.0f" "$(echo "${response}" | jq -r '.[1]')")
@@ -52,8 +54,8 @@ git push
 echo "################################################################################"
 echo "Update QMK firmware submodule to latest version (${firmware_version})"
 git submodule update --init --remote --depth=1 --no-single-branch
-cd qmk_firmware
-git checkout -B firmware${firmware_version} origin/firmware${firmware_version}
+cd qmk_firmware || exit 1
+git checkout -B "firmware${firmware_version}" "origin/firmware${firmware_version}"
 git submodule update --init --recursive
 cd ..
 git add qmk_firmware
