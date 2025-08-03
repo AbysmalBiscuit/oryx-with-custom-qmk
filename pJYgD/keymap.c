@@ -336,6 +336,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             layer_move(0);
           }
         } else {
+          if (IS_LAYER_ON(0)) {
+            unregister_code(KC_3);
+          } else {
+            unregister_code(KC_1);
+          }
           unregister_code(KC_LSFT);
           unregister_code(KC_LCTL);
         }
