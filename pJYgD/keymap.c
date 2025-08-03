@@ -22,15 +22,15 @@ enum tap_dance_codes {
   DANCE_6,
 };
 
-#define DUAL_FUNC_0 LT(2, KC_G)
-#define DUAL_FUNC_1 LT(3, KC_0)
-#define DUAL_FUNC_2 LT(15, KC_D)
-#define DUAL_FUNC_3 LT(6, KC_Z)
-#define DUAL_FUNC_4 LT(4, KC_F22)
-#define DUAL_FUNC_5 LT(5, KC_F)
-#define DUAL_FUNC_6 LT(11, KC_2)
-#define DUAL_FUNC_7 LT(8, KC_F2)
-#define DUAL_FUNC_8 LT(4, KC_F15)
+#define DUAL_FUNC_0 LT(2, KC_F23)
+#define DUAL_FUNC_1 LT(8, KC_F22)
+#define DUAL_FUNC_2 LT(5, KC_2)
+#define DUAL_FUNC_3 LT(15, KC_F12)
+#define DUAL_FUNC_4 LT(11, KC_R)
+#define DUAL_FUNC_5 LT(3, KC_F6)
+#define DUAL_FUNC_6 LT(12, KC_2)
+#define DUAL_FUNC_7 LT(9, KC_F8)
+#define DUAL_FUNC_8 LT(8, KC_C)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_moonlander(
@@ -58,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,                 KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT
   ),
   [3] = LAYOUT_moonlander(
-    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, TD(DANCE_2),                                    TO(0),          KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, 
+    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, TD(DANCE_2),                                    KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, 
     KC_TRANSPARENT, KC_Q,           KC_W,           KC_E,           KC_R,           KC_T,           KC_TRANSPARENT,                                 KC_TRANSPARENT, KC_Y,           KC_U,           KC_I,           KC_O,           KC_P,           KC_TRANSPARENT, 
     KC_TRANSPARENT, KC_A,           KC_S,           KC_D,           KC_F,           KC_G,           KC_TRANSPARENT,                                                                 KC_TRANSPARENT, KC_H,           KC_J,           KC_K,           KC_L,           KC_SCLN,        KC_TRANSPARENT, 
     KC_TRANSPARENT, KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,                                           KC_N,           KC_M,           KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, 
