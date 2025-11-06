@@ -3,6 +3,23 @@
 layout_id="pJYgD"
 layout_geometry="moonlander"
 firmware_version=25
+FRESH_CLONE=true
+
+echo "Cloning project"
+if [ "${FRESH_CLONE:-true}" = "true" ] && [ -d deployment ]; then
+	rm -rf build
+fi
+
+# Update deployment or clone repo for deployment
+if [ -d build ]; then
+	cd build || exit 1
+	echo "Pulling latest changes"
+	git reset --hard HEAD
+	git pull
+else
+	git clone --branch "${DEPLOY_BRANCH}" --single-branch .git build
+	cd build || exit 1
+fi
 
 echo "################################################################################"
 echo "Checkout Repository"
