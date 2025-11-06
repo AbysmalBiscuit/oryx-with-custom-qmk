@@ -34,8 +34,8 @@ enum tap_dance_codes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_moonlander(
-    KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           TD(DANCE_0),                                    DUAL_FUNC_2,    KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           KC_MINUS,       
-    KC_DELETE,      KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           DUAL_FUNC_0,                                    KC_BSLS,        KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSLS,        
+    KC_ESCAPE,      KC_1,           KC_2,           KC_3,           KC_4,           KC_5,           TD(DANCE_0),                                    DUAL_FUNC_2,    KC_6,           KC_7,           KC_8,           KC_9,           KC_0,           KC_MINUS,
+    KC_DELETE,      KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           DUAL_FUNC_0,                                    KC_BSLS,        KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSLS,
     KC_BSPC,        KC_A,           KC_R,           KC_S,           KC_T,           KC_D,           DUAL_FUNC_1,                                                                    KC_EQUAL,       KC_H,           KC_N,           KC_E,           KC_I,           KC_O,           DUAL_FUNC_3,    
     MT(MOD_LSFT, KC_LBRC),KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,                                           KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       MT(MOD_RSFT, KC_RBRC),
     SC_LCPO,        MO(5),          MO(6),          KC_LEFT,        KC_RIGHT,       SC_LCPO,                                                                                                        SC_RCPC,        KC_UP,          KC_DOWN,        KC_NO,          KC_NO,          SC_RCPC,
@@ -124,13 +124,47 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT(
-  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R', 'R',
-  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R', 'R',
-  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R', 'R',
-  'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R',
-  'L', 'L', 'L', 'L', 'L', '*', '*', 'R', 'R', 'R', 'R', 'R',
-                 '*', '*', '*', '*', '*', '*'
+  'L', 'L', 'L', 'L', 'L', 'L', 'L',    'R', 'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L', 'L', 'L',    'R', 'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L', 'L', 'L',    'R', 'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L', 'L',                      'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L',          '*',    '*',          'R', 'R', 'R', 'R', 'R',
+                                      '*', '*', '*',    '*', '*', '*'
 );
+
+bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
+                      uint16_t other_keycode, keyrecord_t* other_record) {
+  // Exceptionally allow some one-handed chords for hotkeys.
+  switch (tap_hold_keycode) {
+    // Left hand shift [ space-cadet, always allow chord
+    case MT(MOD_LSFT, KC_LBRC):
+      return true;
+      break;
+
+    // Right hand shift ] space-cadet, always allow chord
+    case MT(MOD_RSFT, KC_RBRC):
+      return true;
+      break;
+
+    // Right hand dual '" button, never allow chord
+    case DUAL_FUNC_3:
+      return false;
+      break;
+
+    // Left hand dual `~ button, never allow chord
+    case DUAL_FUNC_0:
+      return false;
+      break;
+
+    // Left hand dual _- button, never allow chord
+    case DUAL_FUNC_1:
+      return false;
+      break;
+  }
+  // Otherwise defer to the opposite hands rule.
+  return get_chordal_hold_default(tap_hold_record, other_record);
+}
+
 
 const uint16_t PROGMEM combo0[] = { KC_H, KC_N, COMBO_END};
 const uint16_t PROGMEM combo1[] = { KC_F, KC_P, COMBO_END};
