@@ -22,15 +22,15 @@ enum tap_dance_codes {
   DANCE_6,
 };
 
-#define DUAL_FUNC_0 LT(2, KC_F23)
-#define DUAL_FUNC_1 LT(8, KC_F22)
-#define DUAL_FUNC_2 LT(5, KC_2)
-#define DUAL_FUNC_3 LT(15, KC_F12)
-#define DUAL_FUNC_4 LT(11, KC_R)
-#define DUAL_FUNC_5 LT(3, KC_F6)
-#define DUAL_FUNC_6 LT(12, KC_2)
-#define DUAL_FUNC_7 LT(9, KC_F8)
-#define DUAL_FUNC_8 LT(8, KC_C)
+#define DUAL_FUNC_0 LT(15, KC_H)
+#define DUAL_FUNC_1 LT(5, KC_4)
+#define DUAL_FUNC_2 LT(12, KC_U)
+#define DUAL_FUNC_3 LT(14, KC_3)
+#define DUAL_FUNC_4 LT(7, KC_F11)
+#define DUAL_FUNC_5 LT(15, KC_K)
+#define DUAL_FUNC_6 LT(8, KC_F8)
+#define DUAL_FUNC_7 LT(3, KC_F24)
+#define DUAL_FUNC_8 LT(10, KC_K)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_moonlander(
@@ -38,7 +38,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_DELETE,      KC_Q,           KC_W,           KC_F,           KC_P,           KC_G,           DUAL_FUNC_0,                                    KC_BSLS,        KC_J,           KC_L,           KC_U,           KC_Y,           KC_SCLN,        KC_BSLS,        
     KC_BSPC,        KC_A,           KC_R,           KC_S,           KC_T,           KC_D,           DUAL_FUNC_1,                                                                    KC_EQUAL,       KC_H,           KC_N,           KC_E,           KC_I,           KC_O,           DUAL_FUNC_3,    
     MT(MOD_LSFT, KC_LBRC),KC_Z,           KC_X,           KC_C,           KC_V,           KC_B,                                           KC_K,           KC_M,           KC_COMMA,       KC_DOT,         KC_SLASH,       MT(MOD_RSFT, KC_RBRC),
-    SC_LCPO,        LT(5, KC_GRAVE),MO(6),          KC_LEFT,        KC_RIGHT,       SC_LCPO,                                                                                                        SC_RCPC,        KC_UP,          KC_DOWN,        KC_NO,          KC_NO,          SC_RCPC,        
+    SC_LCPO,        MO(5),          MO(6),          KC_LEFT,        KC_RIGHT,       SC_LCPO,                                                                                                        SC_RCPC,        KC_UP,          KC_DOWN,        KC_NO,          KC_NO,          SC_RCPC,
     KC_SPACE,       TD(DANCE_1),    KC_LEFT_GUI,                    MT(MOD_LSFT, KC_BSPC),MT(MOD_RALT, KC_ESCAPE),LT(7, KC_ENTER)
   ),
   [1] = LAYOUT_moonlander(
@@ -193,12 +193,18 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
+
 extern rgb_config_t rgb_matrix_config;
+
+RGB hsv_to_rgb_with_value(HSV hsv) {
+  RGB rgb = hsv_to_rgb( hsv );
+  float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
+  return (RGB){ f * rgb.r, f * rgb.g, f * rgb.b };
+}
 
 void keyboard_post_init_user(void) {
   rgb_matrix_enable();
 }
-
 
 const uint8_t PROGMEM ledmap[][RGB_MATRIX_LED_COUNT][3] = {
     [0] = { {157,170,255}, {113,242,230}, {113,242,230}, {200,255,122}, {200,255,122}, {20,255,230}, {137,255,230}, {137,255,230}, {137,255,230}, {242,229,230}, {20,255,230}, {137,255,230}, {137,255,230}, {137,255,230}, {242,229,230}, {20,255,230}, {137,255,230}, {137,255,230}, {137,255,230}, {39,229,230}, {20,255,230}, {137,255,230}, {137,255,230}, {137,255,230}, {39,229,230}, {20,255,230}, {137,255,230}, {137,255,230}, {137,255,230}, {242,229,230}, {160,242,242}, {160,242,242}, {6,171,255}, {6,171,255}, {200,255,122}, {200,255,122}, {160,242,242}, {160,242,242}, {160,242,242}, {200,255,122}, {200,255,122}, {20,255,230}, {160,242,242}, {137,255,230}, {160,242,242}, {137,255,230}, {20,255,230}, {137,255,230}, {137,255,230}, {160,242,242}, {137,255,230}, {20,255,230}, {137,255,230}, {137,255,230}, {160,242,242}, {39,229,230}, {20,255,230}, {137,255,230}, {137,255,230}, {137,255,230}, {39,229,230}, {20,255,230}, {137,255,230}, {137,255,230}, {137,255,230}, {242,229,230}, {160,242,242}, {160,242,242}, {6,171,255}, {157,170,255}, {113,242,230}, {200,255,122} },
@@ -235,9 +241,8 @@ void set_layer_color(int layer) {
     if (!hsv.h && !hsv.s && !hsv.v) {
         rgb_matrix_set_color( i, 0, 0, 0 );
     } else {
-        RGB rgb = hsv_to_rgb( hsv );
-        float f = (float)rgb_matrix_config.hsv.v / UINT8_MAX;
-        rgb_matrix_set_color( i, f * rgb.r, f * rgb.g, f * rgb.b );   
+        RGB rgb = hsv_to_rgb_with_value(hsv);
+        rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
     }
   }
 }
@@ -246,213 +251,55 @@ bool rgb_matrix_indicators_user(void) {
   if (rawhid_state.rgb_control) {
       return false;
   }
-  if (keyboard_config.disable_layer_led) { return false; }
-  switch (biton32(layer_state)) {
-    case 0:
-      set_layer_color(0);
-      break;
-    case 1:
-      set_layer_color(1);
-      break;
-    case 2:
-      set_layer_color(2);
-      break;
-    case 3:
-      set_layer_color(3);
-      break;
-    case 4:
-      set_layer_color(4);
-      break;
-    case 5:
-      set_layer_color(5);
-      break;
-    case 6:
-      set_layer_color(6);
-      break;
-    case 7:
-      set_layer_color(7);
-      break;
-    case 8:
-      set_layer_color(8);
-      break;
-    case 9:
-      set_layer_color(9);
-      break;
-    case 10:
-      set_layer_color(10);
-      break;
-   default:
-    if (rgb_matrix_get_flags() == LED_FLAG_NONE)
+  if (!keyboard_config.disable_layer_led) {
+    switch (biton32(layer_state)) {
+      case 0:
+        set_layer_color(0);
+        break;
+      case 1:
+        set_layer_color(1);
+        break;
+      case 2:
+        set_layer_color(2);
+        break;
+      case 3:
+        set_layer_color(3);
+        break;
+      case 4:
+        set_layer_color(4);
+        break;
+      case 5:
+        set_layer_color(5);
+        break;
+      case 6:
+        set_layer_color(6);
+        break;
+      case 7:
+        set_layer_color(7);
+        break;
+      case 8:
+        set_layer_color(8);
+        break;
+      case 9:
+        set_layer_color(9);
+        break;
+      case 10:
+        set_layer_color(10);
+        break;
+     default:
+        if (rgb_matrix_get_flags() == LED_FLAG_NONE) {
+          rgb_matrix_set_color_all(0, 0, 0);
+        }
+    }
+  } else {
+    if (rgb_matrix_get_flags() == LED_FLAG_NONE) {
       rgb_matrix_set_color_all(0, 0, 0);
-    break;
+    }
   }
+
   return true;
 }
 
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-
-    case DUAL_FUNC_0:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(KC_GRAVE);
-        } else {
-          unregister_code16(KC_GRAVE);
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_TILD);
-        } else {
-          unregister_code16(KC_TILD);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_1:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(KC_UNDS);
-        } else {
-          unregister_code16(KC_UNDS);
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_MINUS);
-        } else {
-          unregister_code16(KC_MINUS);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_2:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code(KC_LCTL);
-          register_code(KC_LSFT);
-          if (IS_LAYER_ON(0)) {
-            register_code(KC_3);
-            layer_move(3);
-          } else {
-            register_code(KC_1);
-            layer_move(0);
-          }
-        } else {
-          if (IS_LAYER_ON(0)) {
-            unregister_code(KC_1);
-          } else {
-            unregister_code(KC_3);
-          }
-          unregister_code(KC_LSFT);
-          unregister_code(KC_LCTL);
-        }
-      } else {
-        if (record->event.pressed) {
-          layer_move(1);
-        } else {
-          layer_move(1);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_3:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(KC_QUOTE);
-        } else {
-          unregister_code16(KC_QUOTE);
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_DQUO);
-        } else {
-          unregister_code16(KC_DQUO);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_4:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(LCTL(KC_W));
-        } else {
-          unregister_code16(LCTL(KC_W));
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_MS_WH_UP);
-        } else {
-          unregister_code16(KC_MS_WH_UP);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_5:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(LCTL(KC_A));
-        } else {
-          unregister_code16(LCTL(KC_A));
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_LEFT_ALT);
-        } else {
-          unregister_code16(KC_LEFT_ALT);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_6:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(LCTL(KC_R));
-        } else {
-          unregister_code16(LCTL(KC_R));
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_MS_WH_DOWN);
-        } else {
-          unregister_code16(KC_MS_WH_DOWN);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_7:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(LCTL(KC_S));
-        } else {
-          unregister_code16(LCTL(KC_S));
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_LEFT_SHIFT);
-        } else {
-          unregister_code16(KC_LEFT_SHIFT);
-        }  
-      }  
-      return false;
-    case DUAL_FUNC_8:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(LCTL(KC_T));
-        } else {
-          unregister_code16(LCTL(KC_T));
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_LEFT_CTRL);
-        } else {
-          unregister_code16(KC_LEFT_CTRL);
-        }  
-      }  
-      return false;
-    case RGB_SLD:
-        if (rawhid_state.rgb_control) {
-            return false;
-        }
-        if (record->event.pressed) {
-            rgblight_mode(1);
-        }
-        return false;
-  }
-  return true;
-}
 
 
 typedef struct {
@@ -683,3 +530,170 @@ tap_dance_action_t tap_dance_actions[] = {
         [DANCE_5] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_5, dance_5_finished, dance_5_reset),
         [DANCE_6] = ACTION_TAP_DANCE_FN_ADVANCED(on_dance_6, dance_6_finished, dance_6_reset),
 };
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+  case QK_MODS ... QK_MODS_MAX:
+    // Mouse keys with modifiers work inconsistently across operating systems, this makes sure that modifiers are always
+    // applied to the mouse key that was pressed.
+    if (IS_MOUSE_KEYCODE(QK_MODS_GET_BASIC_KEYCODE(keycode))) {
+    if (record->event.pressed) {
+        add_mods(QK_MODS_GET_MODS(keycode));
+        send_keyboard_report();
+        wait_ms(2);
+        register_code(QK_MODS_GET_BASIC_KEYCODE(keycode));
+        return false;
+      } else {
+        wait_ms(2);
+        del_mods(QK_MODS_GET_MODS(keycode));
+      }
+    }
+    break;
+
+    case DUAL_FUNC_0:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(KC_GRAVE);
+        } else {
+          unregister_code16(KC_GRAVE);
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_TILD);
+        } else {
+          unregister_code16(KC_TILD);
+        }
+      }
+      return false;
+    case DUAL_FUNC_1:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(KC_UNDS);
+        } else {
+          unregister_code16(KC_UNDS);
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_MINUS);
+        } else {
+          unregister_code16(KC_MINUS);
+        }
+      }
+      return false;
+    case DUAL_FUNC_2:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          layer_move(3);
+        } else {
+          layer_move(3);
+        }
+      } else {
+        if (record->event.pressed) {
+          layer_move(1);
+        } else {
+          layer_move(1);
+        }
+      }
+      return false;
+    case DUAL_FUNC_3:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(KC_QUOTE);
+        } else {
+          unregister_code16(KC_QUOTE);
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_DQUO);
+        } else {
+          unregister_code16(KC_DQUO);
+        }
+      }
+      return false;
+    case DUAL_FUNC_4:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(LCTL(KC_W));
+        } else {
+          unregister_code16(LCTL(KC_W));
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_MS_WH_UP);
+        } else {
+          unregister_code16(KC_MS_WH_UP);
+        }
+      }
+      return false;
+    case DUAL_FUNC_5:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(LCTL(KC_A));
+        } else {
+          unregister_code16(LCTL(KC_A));
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_LEFT_ALT);
+        } else {
+          unregister_code16(KC_LEFT_ALT);
+        }
+      }
+      return false;
+    case DUAL_FUNC_6:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(LCTL(KC_R));
+        } else {
+          unregister_code16(LCTL(KC_R));
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_MS_WH_DOWN);
+        } else {
+          unregister_code16(KC_MS_WH_DOWN);
+        }
+      }
+      return false;
+    case DUAL_FUNC_7:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(LCTL(KC_S));
+        } else {
+          unregister_code16(LCTL(KC_S));
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_LEFT_SHIFT);
+        } else {
+          unregister_code16(KC_LEFT_SHIFT);
+        }
+      }
+      return false;
+    case DUAL_FUNC_8:
+      if (record->tap.count > 0) {
+        if (record->event.pressed) {
+          register_code16(LCTL(KC_T));
+        } else {
+          unregister_code16(LCTL(KC_T));
+        }
+      } else {
+        if (record->event.pressed) {
+          register_code16(KC_LEFT_CTRL);
+        } else {
+          unregister_code16(KC_LEFT_CTRL);
+        }
+      }
+      return false;
+    case RGB_SLD:
+        if (rawhid_state.rgb_control) {
+            return false;
+        }
+        if (record->event.pressed) {
+            rgblight_mode(1);
+        }
+        return false;
+  }
+  return true;
+}
+
