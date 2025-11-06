@@ -1,3 +1,4 @@
+#define CHORDAL_HOLD
 #undef TAPPING_TERM
 #define TAPPING_TERM 150
 
@@ -20,7 +21,7 @@
 #define MOUSEKEY_WHEEL_MAX_SPEED 4
 
 #define HOLD_ON_OTHER_KEY_PRESS
-#define SERIAL_NUMBER "pJYgD/5WRO4e"
+#define SERIAL_NUMBER "pJYgD/XbgbqB"
 #define LAYER_STATE_16BIT
 #define COMBO_COUNT 7
 

@@ -22,15 +22,15 @@ enum tap_dance_codes {
   DANCE_6,
 };
 
-#define DUAL_FUNC_0 LT(15, KC_H)
-#define DUAL_FUNC_1 LT(5, KC_4)
-#define DUAL_FUNC_2 LT(12, KC_U)
-#define DUAL_FUNC_3 LT(14, KC_3)
-#define DUAL_FUNC_4 LT(7, KC_F11)
-#define DUAL_FUNC_5 LT(15, KC_K)
-#define DUAL_FUNC_6 LT(8, KC_F8)
-#define DUAL_FUNC_7 LT(3, KC_F24)
-#define DUAL_FUNC_8 LT(10, KC_K)
+#define DUAL_FUNC_0 LT(12, KC_Q)
+#define DUAL_FUNC_1 LT(15, KC_T)
+#define DUAL_FUNC_2 LT(1, KC_F6)
+#define DUAL_FUNC_3 LT(14, KC_F14)
+#define DUAL_FUNC_4 LT(15, KC_R)
+#define DUAL_FUNC_5 LT(14, KC_H)
+#define DUAL_FUNC_6 LT(6, KC_4)
+#define DUAL_FUNC_7 LT(14, KC_F15)
+#define DUAL_FUNC_8 LT(11, KC_F24)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_moonlander(
@@ -123,6 +123,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 
+const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT(
+  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L', 'L', 'R', 'R', 'R', 'R', 'R', 'R',
+  'L', 'L', 'L', 'L', 'L', '*', '*', 'R', 'R', 'R', 'R', 'R',
+                 '*', '*', '*', '*', '*', '*'
+);
 
 const uint16_t PROGMEM combo0[] = { KC_H, KC_N, COMBO_END};
 const uint16_t PROGMEM combo1[] = { KC_F, KC_P, COMBO_END};
