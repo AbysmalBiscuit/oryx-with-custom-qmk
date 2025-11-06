@@ -583,9 +583,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case DUAL_FUNC_2:
       if (record->tap.count > 0) {
         if (record->event.pressed) {
-          layer_move(3);
+          register_code(KC_LCTL);
+          register_code(KC_LSFT);
+          if (IS_LAYER_ON(0)) {
+            register_code(KC_3);
+            layer_move(3);
+          } else {
+            register_code(KC_1);
+            layer_move(0);
+          }
         } else {
-          layer_move(3);
+            if (IS_LAYER_ON(0)) {
+              unregister_code(KC_1);
+            } else {
+              unregister_code(KC_3);
+            }
+            unregister_code(KC_LSFT);
+            unregister_code(KC_LCTL);
         }
       } else {
         if (record->event.pressed) {
