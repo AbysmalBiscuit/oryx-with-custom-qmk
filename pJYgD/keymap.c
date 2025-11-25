@@ -135,31 +135,21 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT(
 bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
                       uint16_t other_keycode, keyrecord_t* other_record) {
   // Exceptionally allow some one-handed chords for hotkeys.
+  // Firs all allowed keys, then non-allowed keys.
   switch (tap_hold_keycode) {
     // Left hand shift [ space-cadet, always allow chord
     case MT(MOD_LSFT, KC_LBRC):
-      return true;
-      break;
-
     // Right hand shift ] space-cadet, always allow chord
     case MT(MOD_RSFT, KC_RBRC):
       return true;
-      break;
-
-    // Right hand dual '" button, never allow chord
-    case DUAL_FUNC_3:
-      return false;
-      break;
 
     // Left hand dual `~ button, never allow chord
     case DUAL_FUNC_0:
-      return false;
-      break;
-
     // Left hand dual _- button, never allow chord
     case DUAL_FUNC_1:
+    // Right hand dual '" button, never allow chord
+    case DUAL_FUNC_3:
       return false;
-      break;
   }
   // Otherwise defer to the opposite hands rule.
   return get_chordal_hold_default(tap_hold_record, other_record);
