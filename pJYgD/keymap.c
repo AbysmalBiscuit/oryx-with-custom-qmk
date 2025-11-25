@@ -583,32 +583,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     break;
 
     case DUAL_FUNC_0:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(KC_GRAVE);
+      if (record->event.pressed) {
+        if (record->tap.count > 0) {
+          tap_code16(KC_GRAVE);
         } else {
-          unregister_code16(KC_GRAVE);
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_TILD);
-        } else {
-          unregister_code16(KC_TILD);
+          tap_code16(KC_TILD);
         }
       }
       return false;
     case DUAL_FUNC_1:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(KC_UNDS);
+      if (record->event.pressed) {
+        if (record->tap.count > 0) {
+          tap_code16(KC_UNDS);
         } else {
-          unregister_code16(KC_UNDS);
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_MINUS);
-        } else {
-          unregister_code16(KC_MINUS);
+          tap_code16(KC_MINUS);
         }
       }
       return false;
@@ -642,17 +630,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
     case DUAL_FUNC_3:
-      if (record->tap.count > 0) {
-        if (record->event.pressed) {
-          register_code16(KC_QUOTE);
+      if (record->event.pressed) {
+        if (record->tap.count > 0) {
+          tap_code16(KC_QUOTE);
         } else {
-          unregister_code16(KC_QUOTE);
-        }
-      } else {
-        if (record->event.pressed) {
-          register_code16(KC_DQUO);
-        } else {
-          unregister_code16(KC_DQUO);
+          tap_code16(KC_DQUO);
         }
       }
       return false;
