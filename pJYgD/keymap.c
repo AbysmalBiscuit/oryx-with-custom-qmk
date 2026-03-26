@@ -1,6 +1,7 @@
 #include QMK_KEYBOARD_H
 #include "version.h"
 #include "i18n.h"
+#include "print.h"
 #define MOON_LED_LEVEL LED_LEVEL
 #ifndef ZSA_SAFE_RANGE
 #define ZSA_SAFE_RANGE SAFE_RANGE
@@ -155,6 +156,11 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t* tap_hold_record,
   return get_chordal_hold_default(tap_hold_record, other_record);
 }
 
+void matrix_scan_user(void) {
+    if (layer_state_is(7) && !matrix_is_on(11, 6)) {
+        layer_off(7);
+    }
+}
 
 const uint16_t PROGMEM combo0[] = { KC_H, KC_N, COMBO_END};
 const uint16_t PROGMEM combo1[] = { KC_F, KC_P, COMBO_END};
@@ -564,6 +570,14 @@ tap_dance_action_t tap_dance_actions[] = {
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  // uprintf("kc=0x%04X %s tap=%d ls=0x%08lX\n",
+  //       keycode,
+  //       record->event.pressed ? "DN" : "UP",
+  //       record->tap.count,
+  //       (unsigned long)layer_state);
+  // if (keycode == LT(7, KC_ENTER) && record->event.pressed) {
+  //     uprintf("row=%d col=%d\n", record->event.key.row, record->event.key.col);
+  // }
   switch (keycode) {
   case QK_MODS ... QK_MODS_MAX:
     // Mouse keys with modifiers work inconsistently across operating systems, this makes sure that modifiers are always
